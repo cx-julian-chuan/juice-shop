@@ -1,37 +1,26 @@
-- name: Checkmarx AST Github Action
-  # You may pin to the exact commit or the version.
-  # uses: Checkmarx/ast-github-action@e3f1356c077fcb2ad2062ccc8c9f1631bae59128
-  uses: Checkmarx/ast-github-action@2.3.36
-  with:
-    # Provide the AST portal URL
-    base_uri: 
-    # Provide the Tenant for AST portal URL
-    cx_tenant: 
-    # Client ID for AST portal authentication
-    cx_client_id: 
-    # Secret key for AST portal authentication
-    cx_client_secret: 
-    # Select a Checkmarx Project Name
-    project_name: # optional, default is ${{ github.repository }}
-    # Branch name
-    branch: # optional, default is ${{ github.head_ref || github.ref }}
-    # GitHub API Token
-    github_token: # optional, default is ${{ github.token }}
-    # Global parameters applied to all cx commands
-    global_params: # optional, default is 
-    # Additional parameters for cx scan command only
-    scan_params: # optional, default is 
-    # Additional parameters for cx utils pr command only
-    utils_params: # optional, default is 
-    # Additional parameters for cx results show command only
-    results_params: # optional, default is 
-    # [DEPRECATED] Use scan_params instead. Additional parameters for AST scan
-    additional_params: # optional, default is 
-    # Repository name for PR decoration
-    repo_name: # optional, default is ${{ github.event.repository.name }}
-    # Organization name to create the Pr comment
-    namespace: # optional, default is ${{ github.repository_owner }}
-    # Pr Number of the pull request that needs the decoration
-    pr_number: # optional, default is ${{ github.event.number }}
-    # Source directory
-    source_dir: # optional, default is .
+name: Checkmarx AST Scan
+
+on:
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  checkmarx-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Checkmarx AST Github Action
+        uses: Checkmarx/ast-github-action@2.3.36
+        with:
+          base_uri: ${{ secrets.CX_BASE_URI }}
+          cx_tenant: ${{ secrets.CX_TENANT }}
+          cx_client_id: ${{ secrets.CX_CLIENT_ID }}
+          cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }}
+          scan_params: >-
+            --scan-types sast,sca,iac-security
