@@ -22,5 +22,6 @@ jobs:
           cx_tenant: ${{ secrets.CX_TENANT }}
           cx_client_id: ${{ secrets.CX_CLIENT_ID }}
           cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }}
+          project_name: juice-shop-github-action
           scan_params: >-
             --scan-types sast,sca,iac-security
